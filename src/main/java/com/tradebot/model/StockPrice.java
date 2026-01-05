@@ -12,7 +12,7 @@ import java.util.Objects;
 @Table(name = "StockPrice")
 public class StockPrice {
     @EmbeddedId
-    private StockPriceId date;
+    private StockPriceId stockPriceId;
     private Double open;
     private Double high;
     private Double low;
@@ -22,12 +22,12 @@ public class StockPrice {
     private String stockName;
     private Instant stockDate;
 
-    public StockPriceId getDate() {
-        return date;
+    public StockPriceId getStockPriceId() {
+        return stockPriceId;
     }
 
-    public void setDate(StockPriceId date) {
-        this.date = date;
+    public void setStockPriceId(StockPriceId stockPriceId) {
+        this.stockPriceId = stockPriceId;
     }
 
     public Double getOpen() {
@@ -100,13 +100,14 @@ public class StockPrice {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) return true;
+        if (!(o instanceof StockPrice)) return false;
         StockPrice that = (StockPrice) o;
-        return Objects.equals(date, that.date) && Objects.equals(open, that.open) && Objects.equals(high, that.high) && Objects.equals(low, that.low) && Objects.equals(close, that.close) && Objects.equals(volume, that.volume) && Objects.equals(interest, that.interest);
+        return getStockPriceId().equals(that.getStockPriceId()) && Objects.equals(getOpen(), that.getOpen()) && Objects.equals(getHigh(), that.getHigh()) && Objects.equals(getLow(), that.getLow()) && Objects.equals(getClose(), that.getClose()) && Objects.equals(getVolume(), that.getVolume()) && Objects.equals(getInterest(), that.getInterest()) && Objects.equals(getStockName(), that.getStockName()) && Objects.equals(getStockDate(), that.getStockDate());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(date, open, high, low, close, volume, interest);
+        return Objects.hash(getStockPriceId(), getOpen(), getHigh(), getLow(), getClose(), getVolume(), getInterest(), getStockName(), getStockDate());
     }
 }

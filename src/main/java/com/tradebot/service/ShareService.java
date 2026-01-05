@@ -1,6 +1,8 @@
 package com.tradebot.service;
 
 import com.tradebot.dao.Stock.Candle;
+import com.tradebot.model.StockPrice;
+import com.tradebot.repository.StockRepository;
 import com.tradebot.uitl.InitStockListJson;
 import com.upstox.ApiException;
 import com.upstox.api.GetHistoricalCandleResponse;
@@ -18,6 +20,8 @@ import java.util.*;
 public class ShareService {
     @Autowired
     InitStockListJson initStockListJson;
+    @Autowired
+    StockRepository stockRepository;
 
 
     private static final Logger logger = LoggerFactory.getLogger(ShareService.class);
@@ -41,9 +45,30 @@ public class ShareService {
         }
         return stockCandleList;
     }
-    /*public Map<String, StockHistoryMaster>  getStockPriceFromDB(String instrumentKey, String toDate, String fromDate, String interval) throws ApiException {
-        Optional<StockHistoryMaster> stockData=stockRepo.findById(instrumentKey);
-        StockHistoryMaster stockDbDataonDate= null;
+    public List<Candle> updateStockPriceFromUpstockAPI(String instrumentKey, String toDate, String fromDate, String interval) throws ApiException {
+        HistoryApi apiInstance = new HistoryApi();
+        Candle stockCandle = null;
+        List<Candle> stockCandleList = new ArrayList<>();
+        String apiVersion = "2.0";
+        GetHistoricalCandleResponse result =null;
+        try {
+            result = apiInstance.getHistoricalCandleData1(instrumentKey, interval, toDate, fromDate, apiVersion);
+            for (List<Object> candle : result.getData().getCandles()) {
+                stockCandle = new Candle(candle.get(0), candle.get(1), candle.get(2), candle.get(3), candle.get(4),
+                        candle.get(5), candle.get(6));
+                stockCandleList.add(stockCandle);
+            }
+        }
+        catch (ApiException e) {
+            throw new ApiException(e);
+        }
+        return stockCandleList;
+    }
+
+
+    /*public Map<String, StockPrice>  getStockPriceFromDBOrUpstockAPI(String instrumentKey, String toDate, String fromDate, String interval) throws ApiException {
+        Optional<StockPrice> stockData=stockRepository.findById(instrumentKey);
+        StockPrice stockDbDataonDate= null;
         List<Candle> stockCandleList = new ArrayList<>();
         if(stockData.isPresent()){
             stockDbDataonDate=stockData.get();
@@ -57,8 +82,8 @@ public class ShareService {
             throw new ApiException(e);
         }
         return result.getData().getCandles();
-    }
-*/
+    }*/
+
    /* public Map<String, StockData> getAllStockPrice(String instrumentKey,String toDate, String fromDate,String interval){
         //System.out.println(initStockListJson.equityStockjson);
         int equityStockSize=initStockListJson.equityStockjson.size();

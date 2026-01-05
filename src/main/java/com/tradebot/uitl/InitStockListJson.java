@@ -29,10 +29,10 @@ public class InitStockListJson {
     public List<String> stocknameListMaster;
     public Map<String, StockDetail> stockDetailsMap;
     private JsonElement json;
-    @PostConstruct
+    /*@PostConstruct
     void init() throws IOException, ParseException {
         new InitStockListJson();
-    }
+    }*/
     public InitStockListJson() throws IOException, ParseException {
         System.out.println("********************InitStockCodeJSON");
         this.equityStockjson=new JsonArray();

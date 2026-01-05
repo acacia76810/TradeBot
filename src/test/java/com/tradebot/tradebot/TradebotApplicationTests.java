@@ -1,9 +1,11 @@
 package com.tradebot.tradebot;
 
+import com.tradebot.dao.InitJSON.StockDetail;
 import com.tradebot.model.Stock.StockPriceId;
 import com.tradebot.model.StockPrice;
 import com.tradebot.repository.StockRepository;
 import com.tradebot.service.ShareService;
+import com.tradebot.uitl.InitStockListJson;
 import com.upstox.ApiException;
 import org.assertj.core.internal.bytebuddy.utility.dispatcher.JavaDispatcher;
 import org.junit.jupiter.api.Test;
@@ -22,20 +24,23 @@ class TradebotApplicationTests {
 	ShareService shareService;
 	@Autowired
 	StockRepository stockRepository;
+	@Autowired
+	InitStockListJson initStockListJson;
 
 	@Test
 	void contextLoads() throws ApiException {
 
 		StockPrice stocck=new StockPrice();
 		StockPriceId priceId=new StockPriceId();
-		priceId.setStockName("AHUJA");
+		priceId.setStockName("Chaitanya");
 		priceId.setTimeStamp(Instant.now());
+		stocck.setStockPriceId(priceId);
 		stocck.setOpen(21d);
 		stocck.setHigh(24d);
 		stocck.setClose(22d);
 		stocck.setLow(12d);
 		stocck.getVolume(2322D);
-		stocck.setStockName("Ahuja");
+		stocck.setStockName("Chaitanya");
 		stocck.setStockDate(Instant.now());
 		stockRepository.save(stocck);
 		//System.out.println(shareService.getStockPriceFromUpstockAPI("NSE_EQ|INE619A01035","2026-01-02","2025-12-31","1day"));
@@ -60,5 +65,15 @@ class TradebotApplicationTests {
 	void fetchUpstockPrice() throws ApiException {
 		System.out.println(shareService.getStockPriceFromUpstockAPI("NSE_EQ|INE619A01035","2026-01-02","2025-12-31","day"));
 
+	}
+
+	@Test
+	void fetchAllStockDetails(){
+		//System.out.println(initStockListJson.stocknameListMaster);
+		for(String stockD:initStockListJson.stockDetailsMap.keySet()){
+			System.out.println(initStockListJson.stockDetailsMap.get(stockD).getStockName()+" | "+
+					initStockListJson.stockDetailsMap.get(stockD).getStockID()+ " | "+
+					initStockListJson.stockDetailsMap.get(stockD).getStockCode());
+		}
 	}
 }
