@@ -11,15 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication
-public class TradebotApplication implements CommandLineRunner {
-	@Autowired
-	ShareRepository shareRepository;
+public class TradebotApplication  {
+
 
 	public static void main(String[] args) {
 		SpringApplication.run(TradebotApplication.class, args);
 	}
 
-	@Override
+	/*@Override
 	public void run(String... args) throws Exception {
 		List<Share> shareList= new ArrayList<>();
 		Share sptl=new Share(5.5,7.2,11.8);
@@ -28,5 +27,5 @@ public class TradebotApplication implements CommandLineRunner {
 		shareList.add(sptl);
 		shareList.add(reliance);
 		shareRepository.insert(shareList);
-	}
+	}*/
 }

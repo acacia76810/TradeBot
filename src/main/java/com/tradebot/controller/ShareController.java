@@ -16,8 +16,8 @@ public class ShareController {
     @Autowired
     ShareService shareService;
 
-    @GetMapping("/")
+    /*@GetMapping("/")
     public List<Share> getAllShare(){
         return shareService.getAllShare();
-    }
+    }*/
 }
