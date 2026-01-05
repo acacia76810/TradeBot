@@ -4,8 +4,10 @@ import com.tradebot.dao.InitJSON.StockDetail;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.tradebot.repository.UpstockRepository;
 import net.minidev.json.JSONArray;
 import net.minidev.json.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +25,8 @@ import java.util.Map;
 
 @Component
 public class InitStockListJson {
+    @Autowired
+    UpstockRepository upstockRepository;
     Path filePath= Paths.get(new ClassPathResource("NSE.json").getFile().getAbsolutePath());
     private JSONArray exchnageList;
     public JsonArray equityStockjson;

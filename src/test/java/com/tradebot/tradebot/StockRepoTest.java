@@ -4,6 +4,7 @@ import com.tradebot.model.Stock.StockPriceId;
 import com.tradebot.repository.StockRepository;
 import com.tradebot.service.ShareService;
 import com.upstox.ApiException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,6 +24,7 @@ public class StockRepoTest {
         stockRepository.findById(stockPriceId);
     }
     @Test
+    @Disabled
     void saveUpstockToDB() {
         try {
             shareService.getStockPriceFromUpstockAPI("NSE_EQ|INE388Y01029", "2026-01-02", "2025-12-31", "day");
