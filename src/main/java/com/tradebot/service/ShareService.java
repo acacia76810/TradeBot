@@ -1,8 +1,6 @@
 package com.tradebot.service;
 
 import com.tradebot.dao.Stock.Candle;
-import com.tradebot.model.Share;
-import com.tradebot.repository.ShareRepository;
 import com.tradebot.uitl.InitStockListJson;
 import com.upstox.ApiException;
 import com.upstox.api.GetHistoricalCandleResponse;

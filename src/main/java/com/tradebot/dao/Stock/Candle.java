@@ -1,6 +1,6 @@
 package com.tradebot.dao.Stock;
 
-import org.springframework.data.annotation.Id;
+
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,7 +9,7 @@ import java.util.Date;
 public class Candle {
 
     //[2024-11-13T15:15:00+05:30, 195.7, 197.0, 195.7, 197.0, 1800.0, 0.0]
-    @Id
+
     private Date date;
     private Double open;
     private Double high;
