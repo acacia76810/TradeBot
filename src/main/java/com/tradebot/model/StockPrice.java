@@ -5,6 +5,7 @@ import com.tradebot.model.Stock.StockPriceId;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.time.Instant;
 import java.util.Objects;
 
 @Entity
@@ -18,6 +19,8 @@ public class StockPrice {
     private Double close;
     private Double volume;
     private Double interest;
+    private String stockName;
+    private Instant stockDate;
 
     public StockPriceId getDate() {
         return date;
@@ -73,6 +76,26 @@ public class StockPrice {
 
     public void setInterest(Double interest) {
         this.interest = interest;
+    }
+
+    public Double getVolume() {
+        return volume;
+    }
+
+    public String getStockName() {
+        return stockName;
+    }
+
+    public void setStockName(String stockName) {
+        this.stockName = stockName;
+    }
+
+    public Instant getStockDate() {
+        return stockDate;
+    }
+
+    public void setStockDate(Instant stockDate) {
+        this.stockDate = stockDate;
     }
 
     @Override

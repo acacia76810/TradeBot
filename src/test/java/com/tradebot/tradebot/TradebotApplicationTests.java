@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,13 +30,15 @@ class TradebotApplicationTests {
 		StockPriceId priceId=new StockPriceId();
 		priceId.setStockName("AHUJA");
 		priceId.setTimeStamp(Instant.now());
-		stocck.setOpen(22d);
-		stocck.setHigh(29d);
-		stocck.setClose(25d);
-		stocck.setLow(19d);
-		stocck.getVolume(2300D);
+		stocck.setOpen(21d);
+		stocck.setHigh(24d);
+		stocck.setClose(22d);
+		stocck.setLow(12d);
+		stocck.getVolume(2322D);
+		stocck.setStockName("Ahuja");
+		stocck.setStockDate(Instant.now());
 		stockRepository.save(stocck);
-		System.out.println(shareService.getStockPriceFromUpstockAPI("NSE_EQ|INE619A01035","2026-01-02","2025-12-31","1day"));
+		//System.out.println(shareService.getStockPriceFromUpstockAPI("NSE_EQ|INE619A01035","2026-01-02","2025-12-31","1day"));
 
 				/*Airport savedAirport = repo.save(airport);
 
@@ -44,4 +48,17 @@ class TradebotApplicationTests {
 
 	}
 
+	@Test
+	void fetchTest() throws ApiException {
+		List<StockPrice> stockList= (List<StockPrice>) stockRepository.findAll();
+
+		for(StockPrice stock:stockList) {
+			System.out.println(stock.getOpen());
+		}
+	}
+	@Test
+	void fetchUpstockPrice() throws ApiException {
+		System.out.println(shareService.getStockPriceFromUpstockAPI("NSE_EQ|INE619A01035","2026-01-02","2025-12-31","day"));
+
+	}
 }
