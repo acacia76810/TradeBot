@@ -1,14 +1,15 @@
 package com.tradebot.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import javax.persistence.*;
 import java.util.Objects;
 
-@Entity
-@Table(name = "UpstockAllStockInfo")
+@Document(collection = "Upstock")
 public class Upstock {
     @Id
+    @Indexed(unique = true)
     private String instrument_key;
     private String segment;
     private String name;

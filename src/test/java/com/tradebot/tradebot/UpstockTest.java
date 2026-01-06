@@ -28,8 +28,7 @@ public class UpstockTest {
         try (Reader reader = new InputStreamReader(new FileInputStream(new ClassPathResource("NSE.json").getFile().getAbsolutePath()), "UTF-8")) {
             JsonElement json = JsonParser.parseReader( reader );
             JsonArray exchangeJson = json.getAsJsonArray();
-            JsonArray equityStockjson = null;
-            //for (int i=0;i<exchangeJson.size();i++){
+
             exchangeJson.forEach(js->{
                         System.out.println(js);
                 Upstock upstock=new Upstock();
@@ -60,34 +59,14 @@ public class UpstockTest {
                 upstock.setIntraday_leverage(CheckAndGet(js,"intraday_leverage"));
                 upstockRepository.save(upstock);
                     });
-                //if(exchangeJson.get(i).getAsJsonObject().get("segment").getAsString().equals("NSE_EQ")) {
-                /*Upstock upstock=new Upstock();
-                upstock.setInstrument_key("");
-                upstock.setSegment(exchangeJson.get(i).getAsJsonObject().("segment").getAsString());
-                upstock.setName("String name") ;
-                upstock.setExchange("") ;
-                upstock.setIsin("") ;
-                upstock.setInstrument_type("");
-                upstock.setLot_size("") ;
-                upstock.setFreeze_quantity("");
-                upstock.setExchange_token("");
-                upstock.setTick_size("") ;
-                upstock.setTrading_symbol("");
-                upstock.setShort_name("") ;
-                upstock.setSecurity_type("") ;*/
 
-
-                                                //}
-            //}
-            //this.stocknameListMaster=stockList;
         } catch (Exception e) {
-            // do something
             e.printStackTrace();
         }
     }
     String CheckAndGet(JsonElement json,String key){
         if(json.getAsJsonObject().has(key)){
-            System.out.println("-------"+json.getAsJsonObject().get(key).getAsString());
+            //System.out.println("-------"+json.getAsJsonObject().get(key).getAsString());
             return json.getAsJsonObject().get(key).getAsString();
         }
         return "";
