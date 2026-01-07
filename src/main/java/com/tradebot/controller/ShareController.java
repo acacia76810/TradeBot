@@ -13,8 +13,8 @@ import java.util.List;
 @RequestMapping("/share")
 public class ShareController {
 
-    @Autowired
-    ShareService shareService;
+    /*@Autowired
+    ShareService shareService;*/
 
     /*@GetMapping("/")
     public List<Share> getAllShare(){

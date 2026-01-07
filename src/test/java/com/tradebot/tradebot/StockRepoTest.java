@@ -20,14 +20,14 @@ public class StockRepoTest {
     @Test
     void StockFetchTest(){
         Instant dateTime=Instant.parse("2026-01-05T12:12:11.467+00:00");
-        StockPriceId stockPriceId=new StockPriceId("AHUJA", dateTime);
+        StockPriceId stockPriceId=new StockPriceId("AHUJA", "2026-01-05T12:12:11.467+00:00");
         stockRepository.findById(stockPriceId);
     }
     @Test
     @Disabled
     void saveUpstockToDB() {
         try {
-            shareService.getStockPriceFromUpstockAPI("NSE_EQ|INE388Y01029", "2026-01-02", "2025-12-31", "day");
+            shareService.updateStockPriceFromUpstockAPI("NSE_EQ|INE388Y01029", "2026-01-02", "2025-12-31", "day");
 
         }catch(ApiException e){
             e.printStackTrace();

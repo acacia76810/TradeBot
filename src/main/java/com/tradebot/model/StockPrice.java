@@ -6,6 +6,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @Entity
@@ -21,6 +22,21 @@ public class StockPrice {
     private Double interest;
     private String stockName;
     private Instant stockDate;
+
+    public StockPrice(){}
+    public StockPrice(StockPriceId stockPriceId, Double open, Double high, Double low, Double close, Double volume, Double interest, String stockName, String stockDate) {
+        this.stockPriceId = stockPriceId;
+        this.open = open;
+        this.high = high;
+        this.low = low;
+        this.close = close;
+        this.volume = volume;
+        this.interest = interest;
+        this.stockName = stockName;
+        //this.stockDate = stockDate;
+        OffsetDateTime odt = OffsetDateTime.parse(stockDate);
+        this.stockDate = odt.toInstant();
+    }
 
     public StockPriceId getStockPriceId() {
         return stockPriceId;

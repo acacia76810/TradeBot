@@ -3,10 +3,10 @@ package com.tradebot.tradebot;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.tradebot.dao.InitJSON.StockDetail;
-import com.tradebot.dao.upstock.UpstockDao;
 import com.tradebot.model.Upstock;
 import com.tradebot.repository.UpstockRepository;
+import com.tradebot.service.ShareService;
+import com.upstox.ApiException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,12 +16,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @SpringBootTest
 public class UpstockTest {
 
     @Autowired
     UpstockRepository upstockRepository;
+    @Autowired
+    ShareService shareService;
 
     @Test
     void updateUpstockDB() throws IOException {
@@ -57,10 +61,15 @@ public class UpstockTest {
                 upstock.setMtf_bracket(CheckAndGet(js,"mtf_bracket"));
                 upstock.setIntraday_margin(CheckAndGet(js,"intraday_margin"));
                 upstock.setIntraday_leverage(CheckAndGet(js,"intraday_leverage"));
-                upstockRepository.save(upstock);
+                try {
+                    upstockRepository.save(upstock);
+                }catch(org.springframework.dao.DuplicateKeyException e){
+                    System.out.println("Already Present "+CheckAndGet(js,"name"));
+                }
                     });
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -70,5 +79,38 @@ public class UpstockTest {
             return json.getAsJsonObject().get(key).getAsString();
         }
         return "";
+    }
+
+    @Test
+    void getAllEquity(){
+        List<Upstock> allEquity=upstockRepository.findAllByinstrumenttype("EQ");
+        System.out.println(upstockRepository.findAllByinstrumenttype("EQ"));
+    }
+
+    @Test
+    void UpdateAllEquity(){
+        List<Upstock> allEquity=upstockRepository.findAllByinstrumenttype("EQ");
+        String fromDate="2025-01-01";
+        String toDate= "2026-01-06";
+        String timeInterval="day";
+        AtomicInteger equitySize= new AtomicInteger(allEquity.size());
+        allEquity.forEach(equity->{
+            //equitySize--;
+            try {
+                shareService.updateStockPriceFromUpstockAPI(equity.getInstrument_key(), toDate, fromDate, timeInterval);
+            } catch (ApiException e) {
+                //throw new RuntimeException(e);
+                try {
+                    System.out.println("Remaining "+ equitySize.getAndDecrement());
+                    for(int i=10;i>0;i--){
+                        System.out.println("Waiting for "+i+" seconds");
+                        Thread.sleep(1000);
+                    }
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+
+        });
     }
 }

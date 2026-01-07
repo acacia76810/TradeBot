@@ -1,9 +1,9 @@
 package com.tradebot.service;
 
 import com.tradebot.dao.Stock.Candle;
+import com.tradebot.model.Stock.StockPriceId;
 import com.tradebot.model.StockPrice;
 import com.tradebot.repository.StockRepository;
-import com.tradebot.uitl.InitStockListJson;
 import com.upstox.ApiException;
 import com.upstox.api.GetHistoricalCandleResponse;
 import io.swagger.client.api.HistoryApi;
@@ -18,8 +18,7 @@ import java.util.*;
 
 @Service
 public class ShareService {
-    @Autowired
-    InitStockListJson initStockListJson;
+
     @Autowired
     StockRepository stockRepository;
 
@@ -52,11 +51,28 @@ public class ShareService {
         String apiVersion = "2.0";
         GetHistoricalCandleResponse result =null;
         try {
+            //stockRepository.findById("");
             result = apiInstance.getHistoricalCandleData1(instrumentKey, interval, toDate, fromDate, apiVersion);
             for (List<Object> candle : result.getData().getCandles()) {
                 stockCandle = new Candle(candle.get(0), candle.get(1), candle.get(2), candle.get(3), candle.get(4),
                         candle.get(5), candle.get(6));
-                stockCandleList.add(stockCandle);
+                System.out.println(candle.get(0));
+
+                StockPriceId priceId=new StockPriceId(instrumentKey, (String) candle.get(0));
+                StockPrice stock=new StockPrice(priceId,(Double) candle.get(1),(Double) candle.get(2),(Double) candle.get(3),
+                        (Double) candle.get(4),(Double) candle.get(5),(Double) candle.get(6),instrumentKey,(String) candle.get(0));
+                /*priceId.setStockName(instrumentKey);
+                priceId.setTimeStamp((Instant) candle.get(0));*/
+                /*stock.setStockPriceId(priceId);
+                stock.setStockDate((Instant) candle.get(0));
+                stock.setOpen((Double) candle.get(1));
+                stock.setHigh((Double) candle.get(2));
+                stock.setLow((Double) candle.get(3));
+                stock.setClose((Double) candle.get(4));
+                stock.setVolume((Double) candle.get(5));
+                stock.setInterest((Double) candle.get(6));*/
+               // stockCandleList.add(stockCandle);
+                stockRepository.save(stock);
             }
         }
         catch (ApiException e) {

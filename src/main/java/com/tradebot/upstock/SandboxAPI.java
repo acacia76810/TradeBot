@@ -1,6 +1,5 @@
 package com.tradebot.upstock;
 
-import com.tradebot.uitl.InitStockListJson;
 import com.upstox.ApiClient;
 import com.upstox.ApiException;
 import com.upstox.Configuration;

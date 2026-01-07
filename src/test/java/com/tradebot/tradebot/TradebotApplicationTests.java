@@ -1,19 +1,15 @@
 package com.tradebot.tradebot;
 
-import com.tradebot.dao.InitJSON.StockDetail;
 import com.tradebot.model.Stock.StockPriceId;
 import com.tradebot.model.StockPrice;
 import com.tradebot.repository.StockRepository;
 import com.tradebot.service.ShareService;
-import com.tradebot.uitl.InitStockListJson;
 import com.upstox.ApiException;
-import org.assertj.core.internal.bytebuddy.utility.dispatcher.JavaDispatcher;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,8 +20,6 @@ class TradebotApplicationTests {
 	ShareService shareService;
 	@Autowired
 	StockRepository stockRepository;
-	@Autowired
-	InitStockListJson initStockListJson;
 
 	@Test
 	void contextLoads() throws ApiException {
@@ -67,13 +61,5 @@ class TradebotApplicationTests {
 
 	}
 
-	@Test
-	void fetchAllStockDetails(){
-		//System.out.println(initStockListJson.stocknameListMaster);
-		for(String stockD:initStockListJson.stockDetailsMap.keySet()){
-			System.out.println(initStockListJson.stockDetailsMap.get(stockD).getStockName()+" | "+
-					initStockListJson.stockDetailsMap.get(stockD).getStockID()+ " | "+
-					initStockListJson.stockDetailsMap.get(stockD).getStockCode());
-		}
-	}
+
 }
