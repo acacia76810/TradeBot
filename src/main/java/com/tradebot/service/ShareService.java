@@ -73,6 +73,7 @@ public class ShareService {
                 stock.setInterest((Double) candle.get(6));*/
                // stockCandleList.add(stockCandle);
                 stockRepository.save(stock);
+                System.out.println("Saved!");
             }
         }
         catch (ApiException e) {

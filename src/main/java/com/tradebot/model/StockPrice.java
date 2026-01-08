@@ -3,18 +3,19 @@ package com.tradebot.model;
 import com.tradebot.model.Stock.StockPriceId;
 import org.springframework.data.mongodb.core.index.Indexed;
 
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "StockPrice")
+@IdClass(StockPriceId.class)
+@Table(name = "StockPrice", uniqueConstraints = {
+        @UniqueConstraint(name = "stockPriceId", columnNames = {"stock_name", "time_stamp"})
+})
 public class StockPrice {
-    @EmbeddedId
-    @Indexed(unique = true)
+    @Id
+    @GeneratedValue
     private StockPriceId stockPriceId;
     private Double open;
     private Double high;

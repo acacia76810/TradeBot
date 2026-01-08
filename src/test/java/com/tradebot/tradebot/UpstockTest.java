@@ -129,24 +129,19 @@ public class UpstockTest {
         String fromDate="2026-01-06";
         String toDate= "2026-01-06";
         String timeInterval="day";
-        AtomicInteger equitySize= new AtomicInteger(allEquity.size());
-        //allEquity.forEach(equity->{
-
-            //equitySize--;
+        int retry=4;
+        boolean saveOne=true;
             try {
-                //shareService.updateStockPriceFromUpstockAPI(equity.getInstrument_key(), toDate, fromDate, timeInterval);
-                shareService.updateStockPriceFromUpstockAPI(allEquity.get(0).getInstrument_key(), toDate, fromDate, timeInterval);
-            } catch (ApiException e) {
-                //throw new RuntimeException(e);
-                try {
-                    System.out.println("Remaining " + equitySize.getAndDecrement());
-                    for (int i = 10; i > 0; i--) {
-                        System.out.println("Waiting for " + i + " seconds");
-                        Thread.sleep(1000);
-                    }
-                } catch (InterruptedException ex) {
-                    throw new RuntimeException(ex);
+                do {
+                    shareService.updateStockPriceFromUpstockAPI(allEquity.get(retry).getInstrument_key(), toDate, fromDate, timeInterval);
+                    saveOne=true;
                 }
+                while(!saveOne);
+            } catch (ApiException e) {
+                retry++;
+                saveOne=false;
+                System.out.println("exception in saving");
+                e.printStackTrace();
             }
 
     }
