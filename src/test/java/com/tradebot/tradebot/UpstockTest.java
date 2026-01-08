@@ -90,20 +90,22 @@ public class UpstockTest {
     @Test
     void UpdateAllEquity(){
         List<Upstock> allEquity=upstockRepository.findAllByinstrumenttype("EQ");
-        String fromDate="2025-01-01";
+        String fromDate="2026-01-06";
         String toDate= "2026-01-06";
         String timeInterval="day";
         AtomicInteger equitySize= new AtomicInteger(allEquity.size());
-        allEquity.forEach(equity->{
+        //allEquity.forEach(equity->{
+        for(int j=0;j<2;j++) {
             //equitySize--;
             try {
-                shareService.updateStockPriceFromUpstockAPI(equity.getInstrument_key(), toDate, fromDate, timeInterval);
+                //shareService.updateStockPriceFromUpstockAPI(equity.getInstrument_key(), toDate, fromDate, timeInterval);
+                shareService.updateStockPriceFromUpstockAPI(allEquity.get(j).getInstrument_key(), toDate, fromDate, timeInterval);
             } catch (ApiException e) {
                 //throw new RuntimeException(e);
                 try {
-                    System.out.println("Remaining "+ equitySize.getAndDecrement());
-                    for(int i=10;i>0;i--){
-                        System.out.println("Waiting for "+i+" seconds");
+                    System.out.println("Remaining " + equitySize.getAndDecrement());
+                    for (int i = 10; i > 0; i--) {
+                        System.out.println("Waiting for " + i + " seconds");
                         Thread.sleep(1000);
                     }
                 } catch (InterruptedException ex) {
@@ -111,6 +113,41 @@ public class UpstockTest {
                 }
             }
 
-        });
+            //});
+        }
+    }
+
+    @Test
+    void DuplicateStockTest(){
+        Upstock allEquity=upstockRepository.findOneByinstrumenttype("EQ");
+        System.out.println(allEquity.getName());
+    }
+
+    @Test
+    void InsertOneStockTest(){
+        List<Upstock> allEquity=upstockRepository.findAllByinstrumenttype("EQ");
+        String fromDate="2026-01-06";
+        String toDate= "2026-01-06";
+        String timeInterval="day";
+        AtomicInteger equitySize= new AtomicInteger(allEquity.size());
+        //allEquity.forEach(equity->{
+
+            //equitySize--;
+            try {
+                //shareService.updateStockPriceFromUpstockAPI(equity.getInstrument_key(), toDate, fromDate, timeInterval);
+                shareService.updateStockPriceFromUpstockAPI(allEquity.get(0).getInstrument_key(), toDate, fromDate, timeInterval);
+            } catch (ApiException e) {
+                //throw new RuntimeException(e);
+                try {
+                    System.out.println("Remaining " + equitySize.getAndDecrement());
+                    for (int i = 10; i > 0; i--) {
+                        System.out.println("Waiting for " + i + " seconds");
+                        Thread.sleep(1000);
+                    }
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+
     }
 }

@@ -1,6 +1,7 @@
 package com.tradebot.model;
 
 import com.tradebot.model.Stock.StockPriceId;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -13,6 +14,7 @@ import java.util.Objects;
 @Table(name = "StockPrice")
 public class StockPrice {
     @EmbeddedId
+    @Indexed(unique = true)
     private StockPriceId stockPriceId;
     private Double open;
     private Double high;

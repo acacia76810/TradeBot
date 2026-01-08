@@ -3,6 +3,7 @@ package com.tradebot.model.Stock;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -22,7 +23,7 @@ public class StockPriceId implements Serializable {
     public StockPriceId(String stockName, String timeStamp) {
         this.stockName = stockName;
         OffsetDateTime odt = OffsetDateTime.parse(timeStamp);
-        this.timeStamp = odt.toInstant();
+        this.timeStamp = odt.toInstant().atOffset(ZoneOffset.of("+05:30")).toInstant();
     }
 
     public String getStockName() {

@@ -13,4 +13,6 @@ import java.util.List;
 public interface UpstockRepository extends MongoRepository<Upstock,String> {
     @Query("{ 'instrument_type' : ?0 }")
     public List<Upstock> findAllByinstrumenttype(String instrumentType);
+    @Query("{ 'instrument_type' : ?0 }")
+    Upstock findOneByinstrumenttype(String eq);
 }
