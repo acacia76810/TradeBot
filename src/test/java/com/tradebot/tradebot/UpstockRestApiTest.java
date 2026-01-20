@@ -1,0 +1,51 @@
+package com.tradebot.tradebot;
+
+import com.tradebot.model.Upstock;
+import com.tradebot.repository.UpstockRepository;
+import com.tradebot.service.StockUpdateAPIService;
+import com.upstox.ApiException;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
+
+@SpringBootTest
+public class UpstockRestApiTest {
+    @Autowired
+    StockUpdateAPIService stockUpdateAPIService;
+    @Autowired
+    UpstockRepository upstockRepository;
+
+    @Test
+    void UpdateUpstockRestAPITest(){
+        List<Upstock> allEquity=upstockRepository.findAllByinstrumenttype("EQ");
+        String fromDate="2026-01-05";
+        String toDate= "2026-01-15";
+        String timeInterval="minutes";
+        String tieGap="1";
+        int retry=4;
+        boolean saveOne=true;
+        do {
+            stockUpdateAPIService.updateStockData(allEquity.get(retry).getInstrument_key(),timeInterval,tieGap, toDate, fromDate );
+            saveOne=true;
+        }
+        while(!saveOne);
+
+    }
+
+    @Test
+    void SaveUpstockAPITest(){
+        List<Upstock> allEquity=upstockRepository.findAllByinstrumenttype("EQ");
+        String fromDate="2026-01-05";
+        String toDate= "2026-01-15";
+        String timeInterval="minutes";
+        String tieGap="1";
+        //for(Upstock stock:allEquity){
+        for (int i=0;i<allEquity.size();i++){
+            stockUpdateAPIService.saveUptockDB(allEquity.get(i).getInstrument_key(),timeInterval,tieGap, toDate, fromDate );
+
+        }
+    }
+
+}

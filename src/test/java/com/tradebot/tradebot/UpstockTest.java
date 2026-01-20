@@ -90,31 +90,31 @@ public class UpstockTest {
     @Test
     void UpdateAllEquity(){
         List<Upstock> allEquity=upstockRepository.findAllByinstrumenttype("EQ");
-        String fromDate="2026-01-06";
-        String toDate= "2026-01-06";
+        String fromDate="2026-01-02";
+        String toDate= "2026-01-04";
         String timeInterval="day";
         AtomicInteger equitySize= new AtomicInteger(allEquity.size());
-        //allEquity.forEach(equity->{
-        for(int j=0;j<2;j++) {
+        allEquity.forEach(equity->{
+        //for(int j=0;j<2;j++) {
             //equitySize--;
             try {
-                //shareService.updateStockPriceFromUpstockAPI(equity.getInstrument_key(), toDate, fromDate, timeInterval);
-                shareService.updateStockPriceFromUpstockAPI(allEquity.get(j).getInstrument_key(), toDate, fromDate, timeInterval);
+                shareService.updateStockPriceFromUpstockAPI(equity.getInstrument_key(), toDate, fromDate, timeInterval);
+              //  shareService.updateStockPriceFromUpstockAPI(allEquity.get(j).getInstrument_key(), toDate, fromDate, timeInterval);
             } catch (ApiException e) {
                 //throw new RuntimeException(e);
                 try {
                     System.out.println("Remaining " + equitySize.getAndDecrement());
-                    for (int i = 10; i > 0; i--) {
+                    for (int i = 1; i > 0; i--) {
                         System.out.println("Waiting for " + i + " seconds");
-                        Thread.sleep(1000);
+                        Thread.sleep(10);
                     }
                 } catch (InterruptedException ex) {
                     throw new RuntimeException(ex);
                 }
             }
 
-            //});
-        }
+            });
+        //}
     }
 
     @Test
@@ -126,9 +126,9 @@ public class UpstockTest {
     @Test
     void InsertOneStockTest(){
         List<Upstock> allEquity=upstockRepository.findAllByinstrumenttype("EQ");
-        String fromDate="2026-01-06";
+        String fromDate="2026-01-05";
         String toDate= "2026-01-06";
-        String timeInterval="day";
+        String timeInterval="minutes";
         int retry=4;
         boolean saveOne=true;
             try {

@@ -5,16 +5,14 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-@Embeddable
 public class StockPriceId implements Serializable {
-    @Column(name = "stock_name")
+    @Field("stock_name")
     private String stockName;
 
 
-    @Column(name = "time_stamp",length = 12)
+    @Field("time_stamp")
     private Instant timeStamp;
 
     public StockPriceId() {
@@ -24,6 +22,7 @@ public class StockPriceId implements Serializable {
         this.stockName = stockName;
         OffsetDateTime odt = OffsetDateTime.parse(timeStamp);
         this.timeStamp = odt.toInstant().atOffset(ZoneOffset.of("+05:30")).toInstant();
+        System.out.println("ContructorSET-"+timeStamp);
     }
 
     public String getStockName() {

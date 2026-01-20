@@ -1,21 +1,23 @@
 package com.tradebot.model;
 
 import com.tradebot.model.Stock.StockPriceId;
-import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-import javax.persistence.*;
 import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Objects;
 
-@Entity
-@IdClass(StockPriceId.class)
-@Table(name = "StockPrice", uniqueConstraints = {
-        @UniqueConstraint(name = "stockPriceId", columnNames = {"stock_name", "time_stamp"})
+@Document(collection = "StockPrice")
+@CompoundIndexes({
+    @CompoundIndex(name = "stock_price_id_idx", def = "{'stockPriceId.stockName': 1, 'stockPriceId.timeStamp': 1}", unique = true)
 })
 public class StockPrice {
     @Id
-    @GeneratedValue
     private StockPriceId stockPriceId;
     private Double open;
     private Double high;
@@ -23,6 +25,8 @@ public class StockPrice {
     private Double close;
     private Double volume;
     private Double interest;
+
+    @Field("stock_name")
     private String stockName;
     private Instant stockDate;
 
@@ -38,7 +42,9 @@ public class StockPrice {
         this.stockName = stockName;
         //this.stockDate = stockDate;
         OffsetDateTime odt = OffsetDateTime.parse(stockDate);
-        this.stockDate = odt.toInstant();
+        this.stockDate = odt.toInstant().atOffset(ZoneOffset.of("+05:30")).toInstant();
+        //OffsetDateTime odt = OffsetDateTime.parse(stockDate);
+        //this.stockDate = odt.toInstant();
     }
 
     public StockPriceId getStockPriceId() {

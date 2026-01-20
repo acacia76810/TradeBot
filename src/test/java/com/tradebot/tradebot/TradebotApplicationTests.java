@@ -57,7 +57,7 @@ class TradebotApplicationTests {
 	}
 	@Test
 	void fetchUpstockPrice() throws ApiException {
-		System.out.println(shareService.getStockPriceFromUpstockAPI("NSE_EQ|INE619A01035","2026-01-02","2025-12-31","day"));
+		System.out.println(shareService.getStockPriceFromUpstockAPI("NSE_EQ|INE619A01035","2025-12-31","2026-01-02","day","1"));
 
 	}
 

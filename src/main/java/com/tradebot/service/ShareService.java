@@ -25,14 +25,14 @@ public class ShareService {
 
     private static final Logger logger = LoggerFactory.getLogger(ShareService.class);
 
-    public List<Candle> getStockPriceFromUpstockAPI(String instrumentKey, String toDate, String fromDate, String interval) throws ApiException {
+    public List<Candle> getStockPriceFromUpstockAPI(String instrumentKey, String toDate, String fromDate, String interval,String timeInterval) throws ApiException {
         HistoryApi apiInstance = new HistoryApi();
         Candle stockCandle = null;
         List<Candle> stockCandleList = new ArrayList<>();
         String apiVersion = "2.0";
         GetHistoricalCandleResponse result =null;
         try {
-            result = apiInstance.getHistoricalCandleData1(instrumentKey, interval, toDate, fromDate, apiVersion);
+            result = apiInstance.getHistoricalCandleData1(instrumentKey, interval,timeInterval, toDate, fromDate);
             for (List<Object> candle : result.getData().getCandles()) {
                 stockCandle = new Candle(candle.get(0), candle.get(1), candle.get(2), candle.get(3), candle.get(4),
                         candle.get(5), candle.get(6));
