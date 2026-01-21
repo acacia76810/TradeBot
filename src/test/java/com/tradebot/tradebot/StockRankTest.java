@@ -28,8 +28,8 @@ public class StockRankTest {
 	void RankOnMonthTest() {
 		Map<Double,Upstock> sortedRank=new TreeMap();
 		List<Upstock> allEquity=upstockRepository.findAllByinstrumenttype("EQ");
-		String fromDate="2026-01-20T00:00:00.000+05:30";
-		String toDate = "2026-01-02T18:30:00.000+00:00";
+		String fromDate="2026-01-20T09:16:00+05:30";
+		String toDate = "2025-12-19T00:00:00+05:30";
 		System.out.println(initialBalance);
 		try {
 		System.out.println(allEquity.size());
@@ -40,12 +40,14 @@ public class StockRankTest {
 			StockPrice buyPriceStock=stockRepository.findByStockPriceId(stockIdFromDate);
 			StockPrice currentPriceStock=stockRepository.findByStockPriceId(stockIdToDate);
 			System.out.println(buyPriceStock +" - "+ currentPriceStock);
-			
+			if(buyPriceStock!=null && currentPriceStock!=null) {
 			double buyPrice=buyPriceStock.getOpen()*initialBalance;
 			double currentPrice=currentPriceStock.getOpen()*initialBalance;
 			double profit=buyPrice-currentPrice;
 			sortedRank.put(profit, stock);
-			System.out.println(profit);
+			System.out.println(profit+" =>> "+buyPrice+" | "+currentPrice);
+			}
+			
 		}
 		for(Double stock:sortedRank.keySet()) {
 			System.out.println(stock +" -- > "+sortedRank.get(stock).getTrading_symbol());

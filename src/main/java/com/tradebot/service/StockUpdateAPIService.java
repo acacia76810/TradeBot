@@ -93,6 +93,6 @@ public class StockUpdateAPIService {
 
     public static void main(String[] args) {
         StockUpdateAPIService st=new StockUpdateAPIService();
-        st.updateStockData("NSE_EQ%7CINE848E01016","minutes","1","2025-01-02","2025-01-01");
+        st.updateStockData("NSE_EQ%7CINE848E01016","days","1","2026-01-02","2026-01-01");
     }
 }
