@@ -48,7 +48,7 @@ public class StockUpdateAPIService {
                 // Do something with the response body (e.g., print it)
                 JsonObject jsonObject = JsonParser.parseString(httpResponse.body()).getAsJsonObject();
 
-                //System.out.println(httpResponse.body());
+                System.out.println(httpResponse.body());
                 return jsonObject;
             } else {
                 // Print an error message if the request was not successful
@@ -84,7 +84,7 @@ public class StockUpdateAPIService {
                         stockId,
                         (String) canldeArr.get(0).getAsString());
                 stockRepository.save(stock);
-                System.out.println("Remaining == >> "+--stockCounter);
+                //System.out.println("Remaining == >> "+--stockCounter);
                 //System.out.println("----->>>>"+canldeArr.get(0)+" | "+canldeArr.get(1));
             }
         }

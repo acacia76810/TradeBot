@@ -15,6 +15,6 @@ public interface StockRepository extends MongoRepository<StockPrice, StockPriceI
 
     @Query("{'stock_name': ?0 }")
     List<StockPrice> findAllByStocknameAscByTime(String stockName, Sort sort);
-
+    StockPrice findByStockPriceId(StockPriceId id);
 
 }

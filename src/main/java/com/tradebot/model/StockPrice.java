@@ -135,4 +135,11 @@ public class StockPrice {
     public int hashCode() {
         return Objects.hash(getStockPriceId(), getOpen(), getHigh(), getLow(), getClose(), getVolume(), getInterest(), getStockName(), getStockDate());
     }
+	@Override
+	public String toString() {
+		return "StockPrice [stockPriceId=" + stockPriceId + ", open=" + open + ", high=" + high + ", low=" + low
+				+ ", close=" + close + ", volume=" + volume + ", interest=" + interest + ", stockName=" + stockName
+				+ ", stockDate=" + stockDate + "]";
+	}
+    
 }

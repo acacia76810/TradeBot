@@ -22,7 +22,7 @@ public class StockPriceId implements Serializable {
         this.stockName = stockName;
         OffsetDateTime odt = OffsetDateTime.parse(timeStamp);
         this.timeStamp = odt.toInstant().atOffset(ZoneOffset.of("+05:30")).toInstant();
-        System.out.println("ContructorSET-"+timeStamp);
+        //System.out.println("ContructorSET-"+timeStamp);
     }
 
     public String getStockName() {
@@ -52,4 +52,11 @@ public class StockPriceId implements Serializable {
     public int hashCode() {
         return Objects.hash(stockName, timeStamp);
     }
+
+	@Override
+	public String toString() {
+		return "StockPriceId [stockName=" + stockName + ", timeStamp=" + timeStamp + "]";
+	}
+    
+    
 }

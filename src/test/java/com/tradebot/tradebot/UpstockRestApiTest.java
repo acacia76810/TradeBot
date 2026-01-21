@@ -37,14 +37,15 @@ public class UpstockRestApiTest {
     @Test
     void SaveUpstockAPITest(){
         List<Upstock> allEquity=upstockRepository.findAllByinstrumenttype("EQ");
-        String fromDate="2026-01-05";
-        String toDate= "2026-01-15";
+        String fromDate="2026-01-15";
+        String toDate= "2026-01-20";
         String timeInterval="minutes";
         String tieGap="1";
+        int allEquitySize=allEquity.size();
         //for(Upstock stock:allEquity){
         for (int i=0;i<allEquity.size();i++){
             stockUpdateAPIService.saveUptockDB(allEquity.get(i).getInstrument_key(),timeInterval,tieGap, toDate, fromDate );
-
+            System.out.println("Remaining Stocks left =="+--allEquitySize);
         }
     }
 
