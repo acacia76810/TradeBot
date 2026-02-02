@@ -38,7 +38,7 @@ public class UpstockRestApiTest {
     void SaveUpstockAPITest(){
         List<Upstock> allEquity=upstockRepository.findAllByinstrumenttype("EQ");
         String fromDate="2026-01-20";
-        String toDate= "2026-01-23";
+        String toDate= "2026-01-29";
         String timeInterval="days";
         String tieGap="1";
         int allEquitySize=allEquity.size();
