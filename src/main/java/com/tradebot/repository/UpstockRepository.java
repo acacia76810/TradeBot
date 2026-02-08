@@ -17,6 +17,8 @@ public interface UpstockRepository extends MongoRepository<Upstock,String> {
     public List<Upstock> findAllByinstrumenttype(String instrumentType);
     @Query("{ 'instrument_type' : ?0 }")
     Upstock findOneByinstrumenttype(String eq);
+    @Query("{ 'instrument_key' : ?0 }")
+    Upstock findOneByinstrumentkey(String key);
     @Query("{ 'stockName' : ?0, 'stockDate' : ?1 }")
     List<Upstock> findByStockPriceId(String firstName, String lastName);
 }
