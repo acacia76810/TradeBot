@@ -130,8 +130,8 @@ public class StockRankTest {
 
 	@Test
 	public void AutoRanking(){
-		int dateCount=365;
-		int previousDayAdjuster=-3;
+		int dateCount=15;
+		int previousDayAdjuster=-1;
 		Map<Double,Upstock> sortedRank=new TreeMap();
 		Calendar fromDate = Calendar.getInstance();
 		fromDate.add(Calendar.DATE, previousDayAdjuster);
@@ -142,6 +142,8 @@ public class StockRankTest {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
 		//System.out.println(sdf.format(fromDate.getTime()));
 		previousDayAdjuster--;
+		String startDate = sdf.format(fromDate.getTime());
+		String endDate;
 		Map<String,Double> stockCollectionMap= new HashMap<>();
 		for(int i=0;i<dateCount;i++){
 			//previousDayAdjuster=previousDayAdjuster-1;
@@ -152,6 +154,7 @@ public class StockRankTest {
 			toDate.set(Calendar.SECOND, 0);
 			toDate.set(Calendar.MILLISECOND, 0);
 			SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+			endDate=sdf2.format(toDate.getTime());
 			System.out.println("Calculating: "+sdf.format(fromDate.getTime())+" | "+sdf2.format(toDate.getTime()) +" | remaining: "+(dateCount-i)+" days.");
 
 			//Date toDate=new Date(sdf.format(cal.getTime()));
