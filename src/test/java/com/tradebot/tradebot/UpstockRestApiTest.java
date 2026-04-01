@@ -20,8 +20,8 @@ public class UpstockRestApiTest {
     @Test
     void UpdateUpstockRestAPITest(){
         List<Upstock> allEquity=upstockRepository.findAllByinstrumenttype("EQ");
-        String fromDate="2026-01-10";
-        String toDate= "2026-02-20";
+        String fromDate="2026-03-10";
+        String toDate= "2026-03-24";
         String timeInterval="minutes";
         String tieGap="1";
         int retry=4;
@@ -37,9 +37,9 @@ public class UpstockRestApiTest {
     @Test
     void SaveUpstockAPITest(){
         List<Upstock> allEquity=upstockRepository.findAllByinstrumenttype("EQ");
-        String fromDate="2026-02-09";
-        String toDate= "2026-02-24";
-        String timeInterval="days";
+        String fromDate="2026-02-27";
+        String toDate= "2026-03-27";
+        String timeInterval="minutes";
         String tieGap="1";
         int allEquitySize=allEquity.size();
         //for(Upstock stock:allEquity){

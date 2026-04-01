@@ -130,8 +130,8 @@ public class StockRankTest {
 
 	@Test
 	public void AutoRanking(){
-		int dateCount=15;
-		int previousDayAdjuster=-1;
+		int dateCount=10;
+		int previousDayAdjuster=-3;
 		Map<Double,Upstock> sortedRank=new TreeMap();
 		Calendar fromDate = Calendar.getInstance();
 		fromDate.add(Calendar.DATE, previousDayAdjuster);
