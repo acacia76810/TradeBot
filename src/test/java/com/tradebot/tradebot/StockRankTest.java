@@ -46,7 +46,7 @@ public class StockRankTest {
 				//stockId.setStockName(stock.getInstrument_key());
 				StockPrice buyPriceStock=stockRepository.findByStockPriceId(stockIdFromDate);
 				StockPrice currentPriceStock=stockRepository.findByStockPriceId(stockIdToDate);
-				//System.out.println(buyPriceStock +" - "+ currentPriceStock);
+				System.out.println(buyPriceStock +" - "+ currentPriceStock);
 				if(buyPriceStock!=null && currentPriceStock!=null) {
 					int stockQty= (int) (initialBalance/buyPriceStock.getOpen());
 					double buyPrice=buyPriceStock.getOpen()*stockQty;
@@ -130,8 +130,8 @@ public class StockRankTest {
 
 	@Test
 	public void AutoRanking(){
-		int dateCount=10;
-		int previousDayAdjuster=-3;
+		int dateCount=30;
+		int previousDayAdjuster=-4;
 		Map<Double,Upstock> sortedRank=new TreeMap();
 		Calendar fromDate = Calendar.getInstance();
 		fromDate.add(Calendar.DATE, previousDayAdjuster);

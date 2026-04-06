@@ -26,7 +26,14 @@ public class StockUpdateAPIService {
     @Autowired
     StockRepository stockRepository;
 
+    @Autowired
+    UpstockInstrumentService upstockInstrumentService;
+
     public JsonObject updateStockData(String stockId, String interval, String timeGap, String fromDate, String toDate){
+        return updateStockData(stockId, interval, timeGap, fromDate, toDate, false);
+    }
+
+    private JsonObject updateStockData(String stockId, String interval, String timeGap, String fromDate, String toDate, boolean instrumentRefreshAttempted){
 
         String url = "https://api.upstox.com/v3/historical-candle/"+URLEncoder.encode(stockId, StandardCharsets.UTF_8)+"/"+interval+"/"+timeGap+"/"+fromDate+"/"+toDate;
         //System.out.println("URL --->>"+url);
@@ -53,13 +60,24 @@ public class StockUpdateAPIService {
             } else {
                 // Print an error message if the request was not successful
                 System.err.println("Error: " + httpResponse.statusCode() + " - " + httpResponse.body());
-
+                if (!instrumentRefreshAttempted && isInvalidInstrumentError(httpResponse.body())) {
+                    upstockInstrumentService.refreshInstrumentData();
+                    return updateStockData(stockId, interval, timeGap, fromDate, toDate, true);
+                }
             }
         } catch (Exception e) {
             // Handle exceptions
+            if (!instrumentRefreshAttempted && isInvalidInstrumentError(e.getMessage())) {
+                upstockInstrumentService.refreshInstrumentData();
+                return updateStockData(stockId, interval, timeGap, fromDate, toDate, true);
+            }
             e.printStackTrace();
         }
         return null;
+    }
+
+    private boolean isInvalidInstrumentError(String errorMessage) {
+        return errorMessage != null && errorMessage.toLowerCase().contains("invalid instrument");
     }
 
     public String saveUptockDB(String stockId, String interval, String timeGap, String fromDate, String toDate){
