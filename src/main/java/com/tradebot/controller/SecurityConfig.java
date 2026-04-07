@@ -24,7 +24,7 @@ public class SecurityConfig {
     private static final String LOGIN_PATH = "/login";
     private static final String REGISTER_PATH = "/register";
     private static final String LOGOUT_PATH = "/logout";
-    private static final String HOME_PATH = "/home";
+    private static final String DASHBOARD_PATH = "/dashboard";
 
     private static void customize(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry auth) {
         auth
@@ -41,11 +41,12 @@ public class SecurityConfig {
         http.formLogin(form -> form
                 .loginPage(LOGIN_PATH)
                 .loginProcessingUrl(LOGIN_PATH)
-                .defaultSuccessUrl(HOME_PATH, true)
+                .defaultSuccessUrl(DASHBOARD_PATH, true)
                 .failureUrl(LOGIN_PATH + "?error=true")
         );
         http.logout(logout -> logout
                 .logoutUrl(LOGOUT_PATH)
+                .logoutSuccessUrl(LOGIN_PATH + "?logout=true")
                 .invalidateHttpSession(true)
                 .clearAuthentication(true)
         );
