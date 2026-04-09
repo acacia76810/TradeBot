@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <title>Stock Ranking</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f3f4f6;
+            color: #111827;
+        }
+        .topbar {
+            background: #111827;
+            color: #fff;
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .topbar a {
+            color: #93c5fd;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .container {
+            padding: 20px;
+        }
+        .controls {
+            background: #fff;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 16px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: end;
+        }
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 160px;
+        }
+        .field input {
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 8px 10px;
+        }
+        .btn {
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 14px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .status {
+            margin: 6px 0 14px;
+            color: #374151;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+            gap: 16px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 14px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+        .title {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .subtitle {
+            color: #6b7280;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+        .profit {
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+        canvas {
+            width: 100% !important;
+            height: 280px !important;
+        }
+    </style>
+</head>
+<body>
+<div class="topbar">
+    <div>Stock Ranking (Top Performing Funds)</div>
+    <a th:href="@{/dashboard}">Back to Dashboard</a>
+</div>
+
+<div class="container">
+    <div class="controls">
+        <div class="field">
+            <label for="dateCount">Ranking Window (days)</label>
+            <input id="dateCount" type="number" min="1" value="15">
+        </div>
+        <div class="field">
+            <label for="topCount">Top Funds</label>
+            <input id="topCount" type="number" min="1" value="8">
+        </div>
+        <div class="field">
+            <label for="maxGraphPoints">Graph Points / Stock</label>
+            <input id="maxGraphPoints" type="number" min="10" value="40">
+        </div>
+        <button class="btn" id="loadBtn" type="button">Load Ranking</button>
+    </div>
+
+    <div id="status" class="status">Click "Load Ranking" to fetch data.</div>
+    <div class="grid" id="chartsGrid"></div>
+</div>
+
+<script>
+    const charts = [];
+
+    function clearCharts() {
+        charts.forEach((c) => c.destroy());
+        charts.length = 0;
+        document.getElementById('chartsGrid').innerHTML = '';
+    }
+
+    async function loadRanking() {
+        const status = document.getElementById('status');
+        const grid = document.getElementById('chartsGrid');
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        clearCharts();
+        status.textContent = 'Loading stock ranking...';
+
+        const payload = {
+            dateCount: Number(document.getElementById('dateCount').value || 15),
+            topCount: Number(document.getElementById('topCount').value || 8),
+            maxGraphPoints: Number(document.getElementById('maxGraphPoints').value || 40)
+        };
+
+        try {
+            const res = await fetch('/stock-rank/top-performing', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfHeader]: csrfToken
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!res.ok) {
+                throw new Error('Failed API: ' + res.status);
+            }
+
+            const stocks = await res.json();
+            if (!stocks.length) {
+                status.textContent = 'No ranking data found for the selected filters.';
+                return;
+            }
+
+            status.textContent = 'Loaded ' + stocks.length + ' stocks. Displayed in ascending profit order.';
+
+            stocks.forEach((stock, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+
+                const title = document.createElement('div');
+                title.className = 'title';
+                title.textContent = (stock.tradingSymbol || stock.instrumentKey) + ' - ' + (stock.name || 'NA');
+                card.appendChild(title);
+
+                const subtitle = document.createElement('div');
+                subtitle.className = 'subtitle';
+                subtitle.textContent = 'Instrument: ' + stock.instrumentKey;
+                card.appendChild(subtitle);
+
+                const profit = document.createElement('div');
+                profit.className = 'profit';
+                profit.textContent = 'Profit Score: ' + Number(stock.profit || 0).toFixed(2);
+                card.appendChild(profit);
+
+                const canvas = document.createElement('canvas');
+                canvas.id = 'chart_' + index;
+                card.appendChild(canvas);
+                grid.appendChild(card);
+
+                const labels = (stock.graphPoints || []).map((p) => p.time);
+                const prices = (stock.graphPoints || []).map((p) => p.stockPrice);
+                const volumes = (stock.graphPoints || []).map((p) => p.volume);
+
+                const chart = new Chart(canvas.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Stock Price',
+                                data: prices,
+                                borderColor: '#2563eb',
+                                yAxisID: 'yPrice',
+                                tension: 0.2
+                            },
+                            {
+                                type: 'bar',
+                                label: 'Volume',
+                                data: volumes,
+                                backgroundColor: 'rgba(16, 185, 129, 0.35)',
+                                borderColor: '#10b981',
+                                yAxisID: 'yVolume'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            x: {
+                                ticks: { maxTicksLimit: 8 }
+                            },
+                            yPrice: {
+                                type: 'linear',
+                                position: 'left',
+                                title: { display: true, text: 'Price' }
+                            },
+                            yVolume: {
+                                type: 'linear',
+                                position: 'right',
+                                title: { display: true, text: 'Volume' },
+                                grid: { drawOnChartArea: false }
+                            }
+                        }
+                    }
+                });
+                charts.push(chart);
+            });
+        } catch (e) {
+            status.textContent = 'Unable to load ranking: ' + e.message;
+        }
+    }
+
+    document.getElementById('loadBtn').addEventListener('click', loadRanking);
+</script>
+</body>
+</html>

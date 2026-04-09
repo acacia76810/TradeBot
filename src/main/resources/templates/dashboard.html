@@ -36,6 +36,13 @@
             cursor: pointer;
             font-weight: 600;
         }
+        .page-link {
+            display: inline-block;
+            margin-top: 12px;
+            text-decoration: none;
+            color: #2563eb;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -51,6 +58,7 @@
     <div class="card">
         <h2>Welcome to your dashboard</h2>
         <p>You are successfully authenticated.</p>
+        <a class="page-link" th:href="@{/stock-ranking}">Open Stock Ranking</a>
     </div>
 </div>
 </body>

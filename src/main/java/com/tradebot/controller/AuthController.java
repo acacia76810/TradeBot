@@ -51,4 +51,9 @@ public class AuthController {
     public String dashboardPage() {
         return "dashboard";
     }
+
+    @GetMapping("/stock-ranking")
+    public String stockRankingPage() {
+        return "stock-ranking";
+    }
 }

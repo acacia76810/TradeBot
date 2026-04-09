@@ -8,7 +8,10 @@ import com.tradebot.repository.UpstockRepository;
 import com.tradebot.service.HolidayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -59,7 +62,67 @@ public class StockRankController {
 
     @GetMapping("/auto")
     public Map<Double, Upstock> autoRanking() {
-        int dateCount = 15;
+        return buildAutoRankingMap(15);
+    }
+
+    @PostMapping("/top-performing")
+    public List<StockRankingResponse> topPerformingFunds(@RequestBody StockRankingRequest request) {
+        int dateCount = request != null && request.getDateCount() != null ? request.getDateCount() : 15;
+        int topCount = request != null && request.getTopCount() != null ? request.getTopCount() : 10;
+        int maxGraphPoints = request != null && request.getMaxGraphPoints() != null ? request.getMaxGraphPoints() : 40;
+        System.out.println("Called - - - -- - - - - - - -- - -top performiang");
+        dateCount = Math.max(1, dateCount);
+        topCount = Math.max(1, topCount);
+        maxGraphPoints = Math.max(10, maxGraphPoints);
+
+        Map<Double, Upstock> ranked = buildAutoRankingMap(dateCount);
+        List<StockRankingResponse> response = new ArrayList<>();
+
+        List<Map.Entry<Double, Upstock>> rankedEntries = new ArrayList<>(ranked.entrySet());
+        Collections.reverse(rankedEntries);
+
+        for (Map.Entry<Double, Upstock> entry : rankedEntries) {
+            if (response.size() >= topCount) {
+                break;
+            }
+            Upstock stock = entry.getValue();
+            if (stock == null || stock.getInstrument_key() == null) {
+                continue;
+            }
+
+            List<StockPrice> allPrices = stockRepository.findAllByInstrumentKey(
+                    stock.getInstrument_key(),
+                    Sort.by(Sort.Direction.ASC, "stockDate")
+            );
+
+            if (allPrices.isEmpty()) {
+                continue;
+            }
+
+            int start = Math.max(0, allPrices.size() - maxGraphPoints);
+            List<StockGraphPoint> points = new ArrayList<>();
+            for (int i = start; i < allPrices.size(); i++) {
+                StockPrice price = allPrices.get(i);
+                points.add(new StockGraphPoint(
+                        String.valueOf(price.getStockDate()),
+                        price.getOpen(),
+                        price.getVolume()
+                ));
+            }
+
+            response.add(new StockRankingResponse(
+                    stock.getInstrument_key(),
+                    stock.getTrading_symbol(),
+                    stock.getName(),
+                    entry.getKey(),
+                    points
+            ));
+        }
+
+        return response;
+    }
+
+    private Map<Double, Upstock> buildAutoRankingMap(int dateCount) {
         int previousDayAdjuster = -1;
         Map<Double, Upstock> sortedRank = new TreeMap<>();
         Calendar fromDate = Calendar.getInstance();
@@ -94,5 +157,95 @@ public class StockRankController {
         }
         
         return sortedRank;
+    }
+
+    public static class StockRankingRequest {
+        private Integer dateCount;
+        private Integer topCount;
+        private Integer maxGraphPoints;
+
+        public Integer getDateCount() {
+            return dateCount;
+        }
+
+        public void setDateCount(Integer dateCount) {
+            this.dateCount = dateCount;
+        }
+
+        public Integer getTopCount() {
+            return topCount;
+        }
+
+        public void setTopCount(Integer topCount) {
+            this.topCount = topCount;
+        }
+
+        public Integer getMaxGraphPoints() {
+            return maxGraphPoints;
+        }
+
+        public void setMaxGraphPoints(Integer maxGraphPoints) {
+            this.maxGraphPoints = maxGraphPoints;
+        }
+    }
+
+    public static class StockRankingResponse {
+        private final String instrumentKey;
+        private final String tradingSymbol;
+        private final String name;
+        private final Double profit;
+        private final List<StockGraphPoint> graphPoints;
+
+        public StockRankingResponse(String instrumentKey, String tradingSymbol, String name, Double profit, List<StockGraphPoint> graphPoints) {
+            this.instrumentKey = instrumentKey;
+            this.tradingSymbol = tradingSymbol;
+            this.name = name;
+            this.profit = profit;
+            this.graphPoints = graphPoints;
+        }
+
+        public String getInstrumentKey() {
+            return instrumentKey;
+        }
+
+        public String getTradingSymbol() {
+            return tradingSymbol;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Double getProfit() {
+            return profit;
+        }
+
+        public List<StockGraphPoint> getGraphPoints() {
+            return graphPoints;
+        }
+    }
+
+    public static class StockGraphPoint {
+        private final String time;
+        private final Double stockPrice;
+        private final Double volume;
+
+        public StockGraphPoint(String time, Double stockPrice, Double volume) {
+            this.time = time;
+            this.stockPrice = stockPrice;
+            this.volume = volume;
+        }
+
+        public String getTime() {
+            return time;
+        }
+
+        public Double getStockPrice() {
+            return stockPrice;
+        }
+
+        public Double getVolume() {
+            return volume;
+        }
     }
 }
